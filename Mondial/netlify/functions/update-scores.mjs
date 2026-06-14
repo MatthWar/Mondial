@@ -1,4 +1,5 @@
 import { roomsStore, writeRoom, json } from "./storage.mjs";
+import { migrateRoomTeams } from "./team-migration.mjs";
 
 const API_URL = "https://api.football-data.org/v4/competitions/WC/matches";
 
@@ -14,7 +15,8 @@ export default async () => {
   for (const blob of blobs) {
     const room = await store.get(blob.key, { type: "json" });
     if (!room?.assignments) continue;
-    const updated = applyMatches(room, matches);
+    const migration = migrateRoomTeams(room);
+    const updated = applyMatches(migration.room, matches);
     await writeRoom(updated);
     updatedRooms.push(updated.code);
   }

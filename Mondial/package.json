@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "netlify dev --dir=public",
     "serve": "npx serve public",
-    "check": "node --check netlify/functions/create-room.mjs && node --check netlify/functions/get-room.mjs && node --check netlify/functions/update-scores.mjs"
+    "check": "node --check public/app.js && node --check public/data.js && node --check netlify/functions/create-room.mjs && node --check netlify/functions/get-room.mjs && node --check netlify/functions/update-scores.mjs && node --check netlify/functions/migrate-teams.mjs && node --check netlify/functions/team-migration.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^9.1.2"

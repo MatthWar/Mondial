@@ -21,6 +21,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/migrate-teams"
+  to = "/.netlify/functions/migrate-teams"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
