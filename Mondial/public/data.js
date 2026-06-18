@@ -24,7 +24,7 @@ export const defaultTeams = [
   { name: "Tchequie", weight: 63, aliases: ["Czechia", "Czech Republic"] },
   { name: "Ecosse", weight: 62, aliases: ["Scotland"] },
   { name: "Suede", weight: 60, aliases: ["Sweden"] },
-  { name: "Bosnie-Herzegovine", weight: 59, aliases: ["Bosnia and Herzegovina"] },
+  { name: "Bosnie-Herzegovine", weight: 59, aliases: ["Bosnia-Herzegovina", "Bosnia and Herzegovina"] },
   { name: "Ouzbekistan", weight: 58, aliases: ["Uzbekistan"] },
   { name: "Turquie", weight: 57, aliases: ["Türkiye", "Turkey"] },
   { name: "Iran", weight: 56, aliases: ["Iran"] },
@@ -44,7 +44,7 @@ export const defaultTeams = [
   { name: "Qatar", weight: 40, aliases: ["Qatar"] },
   { name: "Nouvelle-Zelande", weight: 37, aliases: ["New Zealand"] },
   { name: "Panama", weight: 35, aliases: ["Panama"] },
-  { name: "Cap-Vert", weight: 34, aliases: ["Cape Verde", "Cabo Verde"] },
+  { name: "Cap-Vert", weight: 34, aliases: ["Cape Verde Islands", "Cape Verde", "Cabo Verde"] },
   { name: "Haiti", weight: 32, aliases: ["Haiti"] },
   { name: "Curacao", weight: 28, aliases: ["Curaçao", "Curacao"] }
 ];
