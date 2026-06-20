@@ -24,7 +24,7 @@ function roomCode() {
 function balanceTeams(players, teams) {
   const activePlayers = players.map(cleanName).filter(Boolean);
   const activeTeams = teams
-    .map((team) => ({ ...team, weight: clamp(Number(team.weight) || 1, 1, 100), points: 0 }))
+    .map((team) => ({ ...team, weight: clamp(Number(team.weight) || 1, 1, 100), points: 0, matchesPlayed: 0 }))
     .filter((team) => cleanName(team.name));
 
   const perPlayer = Math.floor(activeTeams.length / activePlayers.length);
@@ -357,9 +357,23 @@ function scoreCard(player) {
         <h4>${escapeHtml(player.name)}</h4>
         <strong>${player.score} pts</strong>
       </div>
-      <ul>${player.teams.map((team) => `<li><span>${escapeHtml(team.name)}</span><b>${team.points || 0} pts</b><em>${team.weight}</em></li>`).join("")}</ul>
+      <ul>${player.teams.map((team) => `<li><span>${escapeHtml(teamNameWithMatches(team))}</span><b>${team.points || 0} pts</b><em>${team.weight}</em></li>`).join("")}</ul>
     </section>
   `;
+}
+
+function teamNameWithMatches(team) {
+  const matchesPlayed = team.matchesPlayed ?? countMatchesPlayed(team);
+  return `${team.name} (${matchesPlayed})`;
+}
+
+function countMatchesPlayed(team) {
+  const teamNames = [team.name, ...(team.aliases || [])].map(normalizeTeamName);
+  return (state.room.matchLog || []).filter((match) => {
+    const home = normalizeTeamName(match.home);
+    const away = normalizeTeamName(match.away);
+    return teamNames.includes(home) || teamNames.includes(away);
+  }).length;
 }
 
 function matchLog() {
@@ -394,6 +408,14 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function normalizeTeamName(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
 }
 
 window.addEventListener("popstate", () => {

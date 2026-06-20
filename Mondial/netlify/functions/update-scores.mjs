@@ -40,6 +40,7 @@ async function fetchFinishedMatches(token) {
 
 function applyMatches(room, matches) {
   const scoreByTeam = new Map();
+  const matchesByTeam = new Map();
   const matchLog = [];
 
   for (const match of matches) {
@@ -53,6 +54,8 @@ function applyMatches(room, matches) {
     const awayPoints = awayScore > homeScore ? 3 : homeScore === awayScore ? 1 : 0;
     addScore(scoreByTeam, home, homePoints);
     addScore(scoreByTeam, away, awayPoints);
+    addMatch(matchesByTeam, home);
+    addMatch(matchesByTeam, away);
     matchLog.push({ home, away, homeScore, awayScore, utcDate: match.utcDate });
   }
 
@@ -60,7 +63,8 @@ function applyMatches(room, matches) {
     ...player,
     teams: player.teams.map((team) => ({
       ...team,
-      points: scoreFor(team, scoreByTeam)
+      points: scoreFor(team, scoreByTeam),
+      matchesPlayed: matchesPlayedFor(team, matchesByTeam)
     }))
   }));
 
@@ -77,11 +81,25 @@ function addScore(map, name, points) {
   map.set(key, (map.get(key) || 0) + points);
 }
 
+function addMatch(map, name) {
+  const key = normalize(name);
+  map.set(key, (map.get(key) || 0) + 1);
+}
+
 function scoreFor(team, map) {
   const names = [team.name, ...(team.aliases || [])];
   for (const name of names) {
     const score = map.get(normalize(name));
     if (score != null) return score;
+  }
+  return 0;
+}
+
+function matchesPlayedFor(team, map) {
+  const names = [team.name, ...(team.aliases || [])];
+  for (const name of names) {
+    const matchesPlayed = map.get(normalize(name));
+    if (matchesPlayed != null) return matchesPlayed;
   }
   return 0;
 }
