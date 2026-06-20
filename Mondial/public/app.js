@@ -294,7 +294,12 @@ async function loadRoom(code) {
 
 function renderRoom() {
   const standings = state.room.assignments
-    .map((player) => ({ ...player, score: sum(player.teams, "points"), startingScore: sum(player.teams, "weight") }))
+    .map((player) => ({
+      ...player,
+      score: sum(player.teams, "points"),
+      startingScore: sum(player.teams, "weight"),
+      matchesPlayed: playerMatchesPlayed(player)
+    }))
     .sort((a, b) => b.score - a.score || b.startingScore - a.startingScore);
   const shareUrl = `${location.origin}${location.pathname}?salon=${state.room.code}`;
 
@@ -344,7 +349,7 @@ function podiumCard(player, index) {
   return `
     <article class="podiumCard">
       <span>#${index + 1}</span>
-      <h3>${escapeHtml(player.name)}</h3>
+      <h3>${escapeHtml(playerNameWithMatches(player))}</h3>
       <strong>${player.score} pts</strong>
     </article>
   `;
@@ -354,12 +359,20 @@ function scoreCard(player) {
   return `
     <section class="playerCard score">
       <div class="playerCard__head">
-        <h4>${escapeHtml(player.name)}</h4>
+        <h4>${escapeHtml(playerNameWithMatches(player))}</h4>
         <strong>${player.score} pts</strong>
       </div>
       <ul>${player.teams.map((team) => `<li><span>${escapeHtml(teamNameWithMatches(team))}</span><b>${team.points || 0} pts</b><em>${team.weight}</em></li>`).join("")}</ul>
     </section>
   `;
+}
+
+function playerNameWithMatches(player) {
+  return `${player.name} (${player.matchesPlayed ?? playerMatchesPlayed(player)})`;
+}
+
+function playerMatchesPlayed(player) {
+  return player.teams.reduce((total, team) => total + (team.matchesPlayed ?? countMatchesPlayed(team)), 0);
 }
 
 function teamNameWithMatches(team) {
